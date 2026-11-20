@@ -42,7 +42,6 @@ status-website:
     nav{border-bottom-width:2px}
     nav .logo{margin-right:1rem}
     article.graph{background-image:none!important}
-    @media (max-width:560px){nav li:first-child{display:none} nav{padding:0 .5rem} nav ul a{padding:1.2rem .45rem;font-size:.9rem} nav .logo{margin-right:.25rem} nav .logo img{height:30px;margin-right:0} .container{padding:0 1rem}}
     nav .logo img{height:44px;width:auto}
     h1{font-weight:700;letter-spacing:-.02em}
     h2{font-weight:600}
@@ -51,6 +50,7 @@ status-website:
     main>article.up,main>article.down,main>article.degraded,section.live-status article{box-shadow:4px 4px 0 #673da6}
     section.live-status article+article{margin-top:.9rem}
     footer,footer a{color:#9ca3af}
+    @media (max-width:560px){nav li:first-child{display:none!important} nav{padding:0 .25rem!important} nav ul a{padding:1.2rem .5rem!important;font-size:.92rem} nav .logo{margin-right:.25rem!important} nav .logo img{height:32px!important;margin-right:0!important} main.container{padding:0 1rem}}
 
 workflowSchedule:
   graphs: "0 0 * * *"
