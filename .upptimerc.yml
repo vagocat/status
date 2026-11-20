@@ -18,9 +18,9 @@ sites:
 
 status-website:
   cname: status.vagocat.com
-  logoUrl: /logo-h120.png
-  favicon: /favicon-32.png
-  favicon-png: /icon-192.png
+  logoUrl: https://raw.githubusercontent.com/vagocat/status/master/brand/logo-h120.png
+  favicon: https://raw.githubusercontent.com/vagocat/status/master/brand/favicon-32.png
+  favicon-png: https://raw.githubusercontent.com/vagocat/status/master/brand/icon-192.png
   name: Vagocat Status
   introTitle: "Vagocat system status"
   introMessage: Live status of Vagocat services, checked every 5 minutes from outside our network. Need help? Contact us at [vagocat.com/contact](https://vagocat.com/contact).
