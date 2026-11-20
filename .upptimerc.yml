@@ -26,6 +26,7 @@ status-website:
   favicon: https://raw.githubusercontent.com/vagocat/status/master/brand/favicon-32.png
   favicon-png: https://raw.githubusercontent.com/vagocat/status/master/brand/icon-192.png
   name: Vagocat Status
+  hideNavTitle: true
   introTitle: "Vagocat system status"
   introMessage: Live status of Vagocat services, checked every 5 minutes from outside our network. Need help? Contact us at [vagocat.com/contact](https://vagocat.com/contact).
   theme: dark
@@ -39,7 +40,9 @@ status-website:
   css: |
     :root{--body-background-color:#0d1117;--body-text-color:#e5e7eb;--card-background-color:#161b22;--card-border-color:#30363d;--nav-background-color:#0d1117;--nav-border-bottom-color:#30363d;--nav-current-border-bottom-color:#8b5cf6;--up-border-left-color:#22c55e;--down-border-left-color:#ef4444;--down-background-color:#3b1219;--degraded-border-left-color:#f59e0b;--tag-color:#0d1117;--tag-up-background-color:#22c55e;--tag-down-background-color:#ef4444;--tag-degraded-background-color:#f59e0b;--change-background-color:#f59e0b;--error-button-border-color:#4c2a85;--error-button-background-color:#673da6;--error-button-color:#fff;--submit-button-border-color:#4c2a85;--submit-button-background-color:#673da6;--submit-button-color:#fff;--graph-opacity:.45;--graph-filter:hue-rotate(95deg) saturate(1.4)}
     nav{border-bottom-width:2px}
-    nav .logo div{display:none}
+    nav .logo{margin-right:1rem}
+    article.graph{background-image:none!important}
+    @media (max-width:560px){nav li:first-child{display:none} nav ul a{padding:1.25rem .7rem} nav .logo img{height:36px} .container{padding:0 1rem}}
     nav .logo img{height:44px;width:auto}
     h1{font-weight:700;letter-spacing:-.02em}
     h2{font-weight:600}
