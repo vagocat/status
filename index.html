@@ -22,12 +22,15 @@ header img{height:42px;display:block}nav a{color:#e5e7eb;text-decoration:none;ma
 const $=i=>document.getElementById(i),E=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x)e.textContent=x;return e},
 L={operational:'Operational',partial:'Partial outage',major:'Major outage',unknown:'Status unknown'},D=s=>new Date(s).toLocaleString('en',{dateStyle:'medium',timeStyle:'short'});
 function card(n){const b=E('div','box '+(n.kind=='incident'?'partial':'maintenance'));b.append(E('h3','',n.title),E('p','m',(n.closed?'Resolved '+D(n.closed)+' · started ':(n.kind=='incident'?'Investigating':'Maintenance')+' · posted ')+D(n.opened)));if(n.body)b.append(E('p','body',n.body));return b}
-async function load(){let d;try{const r=await fetch('https://raw.githubusercontent.com/vagocat/status/data/status.json?t='+Math.floor(Date.now()/6e4));if(!r.ok)throw 0;d=await r.json()}catch(e){$('banner').className='box banner unknown';$('banner').textContent='Current status is unavailable';return}
-const stale=Date.now()-new Date(d.checked)>8*36e5,sv=d.services.map(s=>({...s,state:stale?'unknown':s.state})),open=d.notices.filter(n=>!n.closed),
+const J=async u=>{const r=await fetch(u);if(!r.ok)throw 0;return r.json()},none=()=>null;
+async function load(){const t=Math.floor(Date.now()/6e4),[m,g]=await Promise.all([J('https://status-api.vagocat.com/status.json?t='+t).catch(none),J('https://raw.githubusercontent.com/vagocat/status/data/status.json?t='+t).catch(none)]);
+const ok=[m,g].filter(x=>x&&x.checked);if(!ok.length){$('banner').className='box banner unknown';$('banner').textContent='Current status is unavailable';return}
+const d=ok.reduce((x,y)=>new Date(y.checked)>new Date(x.checked)?y:x);d.notices=ok.flatMap(x=>x.notices).sort((x,y)=>new Date(y.opened)-new Date(x.opened));
+const stale=Date.now()-new Date(d.checked)>20*6e4,sv=d.services.map(s=>({...s,state:stale?'unknown':s.state})),open=d.notices.filter(n=>!n.closed),
 w=['major','partial','unknown','operational'].find(x=>sv.some(s=>s.state==x)),inc=open.some(n=>n.kind=='incident'),st=w=='operational'&&inc?'partial':w;
 $('banner').className='box banner '+st;$('banner').textContent=w=='operational'?(inc?'Active incident':'All systems operational'):{major:'Major outage',partial:'Partial outage',unknown:'Status unknown'}[w];
 $('checked').textContent='Last checked '+D(d.checked);$('notices').replaceChildren(...open.map(card));
 $('services').replaceChildren(...sv.map(s=>{const r=E('div','row');r.append(E('span','',s.name),E('span','s '+s.state,L[s.state]));return r}));
 const old=d.notices.filter(n=>n.closed);$('hist').replaceChildren(...(old.length?old.map(card):[E('p','m','No past incidents or maintenance recorded.')]))}
-load();setInterval(load,3e5);
+load();setInterval(load,6e4);
 </script></body></html>
