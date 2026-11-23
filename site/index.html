@@ -1,0 +1,33 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vagocat Service Status</title><meta name="description" content="Current status of Vagocat hosting, email, domains and account services.">
+<link rel="icon" href="favicon-32.png"><link rel="canonical" href="https://status.vagocat.com/">
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#0d1117;color:#e5e7eb;font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:#a78bfa}header{border-bottom:2px solid #30363d}.w{max-width:860px;margin:auto;padding:0 16px}header .w{display:flex;justify-content:space-between;align-items:center;min-height:72px;gap:12px}
+header img{height:42px;display:block}nav a{color:#e5e7eb;text-decoration:none;margin-left:18px}h1{font-size:clamp(1.6rem,5vw,2.3rem);line-height:1.2;margin:44px 0 18px}h2{margin:46px 0 14px;font-size:1.3rem}
+.box{background:#161b22;border:1px solid #30363d;box-shadow:4px 4px 0 #673da6;padding:16px 20px;margin:0 0 16px}.banner{border-left:6px solid var(--c);font-weight:650;font-size:1.1rem}
+.row{display:flex;justify-content:space-between;gap:16px;padding:15px 0;border-bottom:1px solid #30363d}.row:last-child{border:0}.list{padding:2px 20px}.s{color:var(--c);font-weight:600;text-align:right}.s:before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--c);margin-right:8px}
+.operational{--c:#22c55e}.maintenance{--c:#60a5fa}.partial{--c:#f59e0b}.major{--c:#ef4444}.unknown{--c:#9ca3af}
+.m{color:#9ca3af;font-size:.9rem;margin:4px 0}.body{white-space:pre-wrap;overflow-wrap:anywhere;margin:8px 0}h3{margin:0;font-size:1.05rem}details{border-bottom:1px solid #30363d;padding:14px 0}summary{cursor:pointer;font-weight:600}footer{margin:56px 0 30px;color:#9ca3af;font-size:.9rem}
+</style></head><body><header><div class="w"><a href="/"><img src="logo-h120.png" alt="Vagocat"></a><nav><a href="https://vagocat.com">Website</a><a href="https://vagocat.com/contact">Support</a></nav></div></header>
+<main class="w"><h1>Vagocat Service Status</h1><div id="banner" class="box banner unknown" role="status">Loading current status…</div><p class="m" id="checked"></p>
+<div id="notices"></div><div id="services" class="box list"></div>
+<h2>FAQs</h2>
+<details><summary>How do I check if a service is down?</summary><p>Look at the status beside each service above. If everything is operational but your site won't open, clear your browser cache, try another network or device, and check your DNS settings. Still stuck? <a href="https://vagocat.com/contact">Contact support</a>.</p></details>
+<details><summary>What do the labels mean?</summary><p><b>Operational:</b> our checks passed.<br><b>Partial outage:</b> some checks for that service failed.<br><b>Major outage:</b> all checks for that service failed.<br><b>Status unknown:</b> we don't have a recent result.</p></details>
+<details><summary>Which services are checked?</summary><p>DNS, email, web hosting, the control panel, the account manager and our website. Individual customer websites and virtual servers are not checked here.</p></details>
+<details><summary>What is the difference between maintenance and an outage?</summary><p>Maintenance is planned work that we announce here. An outage is an unplanned problem.</p></details>
+<h2 id="history">History</h2><div id="hist"></div><footer>© Vagocat · <a href="https://vagocat.com">vagocat.com</a></footer></main>
+<script>
+const $=i=>document.getElementById(i),E=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x)e.textContent=x;return e},
+L={operational:'Operational',partial:'Partial outage',major:'Major outage',unknown:'Status unknown'},D=s=>new Date(s).toLocaleString('en',{dateStyle:'medium',timeStyle:'short'});
+function card(n){const b=E('div','box '+(n.kind=='incident'?'partial':'maintenance'));b.append(E('h3','',n.title),E('p','m',(n.closed?'Resolved '+D(n.closed)+' · started ':(n.kind=='incident'?'Investigating':'Maintenance')+' · posted ')+D(n.opened)));if(n.body)b.append(E('p','body',n.body));return b}
+async function load(){let d;try{const r=await fetch('https://raw.githubusercontent.com/vagocat/status/data/status.json?t='+Math.floor(Date.now()/6e4));if(!r.ok)throw 0;d=await r.json()}catch(e){$('banner').className='box banner unknown';$('banner').textContent='Current status is unavailable';return}
+const stale=Date.now()-new Date(d.checked)>8*36e5,sv=d.services.map(s=>({...s,state:stale?'unknown':s.state})),open=d.notices.filter(n=>!n.closed),
+w=['major','partial','unknown','operational'].find(x=>sv.some(s=>s.state==x)),inc=open.some(n=>n.kind=='incident'),st=w=='operational'&&inc?'partial':w;
+$('banner').className='box banner '+st;$('banner').textContent=w=='operational'?(inc?'Active incident':'All systems operational'):{major:'Major outage',partial:'Partial outage',unknown:'Status unknown'}[w];
+$('checked').textContent='Last checked '+D(d.checked);$('notices').replaceChildren(...open.map(card));
+$('services').replaceChildren(...sv.map(s=>{const r=E('div','row');r.append(E('span','',s.name),E('span','s '+s.state,L[s.state]));return r}));
+const old=d.notices.filter(n=>n.closed);$('hist').replaceChildren(...(old.length?old.map(card):[E('p','m','No past incidents or maintenance recorded.')]))}
+load();setInterval(load,3e5);
+</script></body></html>
