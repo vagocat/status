@@ -1,4 +1,5 @@
-"""Checks Vagocat services (up/down only) and writes status.json.
+"""Publishes notices, plus a backup check. The main checks run every 5 minutes
+in worker/worker.js (Cloudflare), which also records automatic incidents.
 Incidents and maintenance are GitHub issues labelled 'incident' or 'maintenance';
 only ones created by the repository owner or by this workflow are shown."""
 import json, os, random, re, socket, ssl, struct, time, urllib.request
@@ -59,17 +60,6 @@ for name, checks in SERVICES:
     state = 'operational' if all(r) else 'partial' if any(r) else 'major'
     result.append({'name': name, 'state': state})
     print(name, state)
-
-openauto = {i['title'].split(' - ')[0]: i for i in api('issues?state=open&labels=incident&per_page=100')
-            if i['user']['login'] == BOT}
-for s in result:
-    i = openauto.get(s['name'])
-    if s['state'] != 'operational' and not i:
-        api('issues', {'title': s['name'] + ' - service disruption', 'labels': ['incident'],
-            'body': 'We are investigating a problem affecting %s.' % s['name']})
-    elif s['state'] == 'operational' and i:
-        api('issues/%d/comments' % i['number'], {'body': 'Resolved. The service is operational again.'})
-        api('issues/%d' % i['number'], {'state': 'closed'}, 'PATCH')
 
 notices = []
 for i in api('issues?state=all&per_page=100&sort=created&direction=desc'):
