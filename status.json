@@ -1,0 +1,1 @@
+{"checked": "2026-11-28T10:33:58Z", "services": [{"name": "DNS / Domains", "state": "operational"}, {"name": "Email", "state": "operational"}, {"name": "Hosting", "state": "operational"}, {"name": "Control Panel", "state": "operational"}, {"name": "Account Manager", "state": "major"}, {"name": "Website", "state": "operational"}], "notices": []}
